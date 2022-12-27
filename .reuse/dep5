@@ -1,0 +1,10 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Kaspa
+Upstream-Contact: Kasps Developers <info@kaspa.org>
+Source: https://github.com/kaspanet
+
+# ############################################################################
+# MIT Licenses
+Files: *
+Copyright: 2022 Kaspa Developers
+License: MIT
