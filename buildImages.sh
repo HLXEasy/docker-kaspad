@@ -113,7 +113,7 @@ REGISTRY_NAME=''
 DOCKER_TAG=docker-kaspad
 DOCKER_TAG_VERSION=latest
 BUILDER_NAME=kaspa_builder
-PLATFORM="linux/arm/v7,linux/arm64/v8,linux/amd64"
+PLATFORM="linux/arm64/v8,linux/amd64"
 
 while getopts b:fp:rt:h option; do
     case ${option} in
