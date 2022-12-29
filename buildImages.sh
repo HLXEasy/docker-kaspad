@@ -36,6 +36,23 @@ helpMe() {
     "
 }
 
+createLocalRegistry() {
+    info "Checking local Docker registry"
+    if docker ps -a --format '{{.Names}}' | grep -q "${REGISTRY_NAME}" ; then
+        if docker ps --format '{{.Names}}' | grep -q "${REGISTRY_NAME}" ; then
+            info " -> Local registry '${REGISTRY_NAME}' already running"
+        else
+            info " -> Starting already existing registry instance '${REGISTRY_NAME}'"
+            docker start "${REGISTRY_NAME}"
+            info " -> Done"
+        fi
+    else
+        info " -> Starting local registry '${REGISTRY_NAME}'"
+        docker run -d -p 5000:5000 --restart=always --name registry registry:2
+        info " -> Done"
+    fi
+}
+
 createBuilder() {
     info "Checking builder instance"
     if docker buildx inspect "${BUILDER_NAME}" >/dev/null 2>&1 ; then
@@ -58,12 +75,15 @@ buildImages() {
 
 IMAGE_SUFFIX=
 IMAGE_TAG=latest
+FORCE_BUILDER_CREATION=false
+REGISTRY_NAME=registry
 BUILDER_NAME=kaspa_builder
 PLATFORM="linux/arm64/v8,linux/amd64"
 
-while getopts b:p:t:h option; do
+while getopts b:fp:t:h option; do
     case ${option} in
         b) BUILDER_NAME="${OPTARG}" ;;
+        f) FORCE_BUILDER_CREATION=true ;;
         p) PLATFORM="${OPTARG}" ;;
         t) IMAGE_TAG="${OPTARG}" ;;
         h) helpMe && exit 0;;
