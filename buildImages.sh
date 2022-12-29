@@ -97,6 +97,7 @@ buildImages() {
     info "Building Docker images"
     docker buildx build \
         --push \
+        --platform "${PLATFORM}" \
         --tag "${REGISTRY_PREFIX}${REGISTRY_NAME}${DOCKER_TAG}:${DOCKER_TAG_VERSION}" \
         .
     info " -> tbd"
