@@ -7,6 +7,7 @@ WORKDIR /app
 
 # Clone kaspad repo and checkout latest tag
 RUN git clone https://github.com/kaspanet/kaspad \
+ && cd kaspad \
  && git checkout $(git describe --tags)
 
 WORKDIR /app/kaspad
