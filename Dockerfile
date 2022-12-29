@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: © 2022 Kaspa Developers
 # SPDX-License-Identifier: MIT
-FROM golang:1.18.2 as builder
+FROM golang:1.18.9 as builder
 
 RUN mkdir /app
 WORKDIR /app
