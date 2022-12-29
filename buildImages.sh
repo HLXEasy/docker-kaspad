@@ -32,6 +32,8 @@ helpMe() {
     -p <platform-list>
         .. List of plattforms separated by comma.
            Default: ${PLATFORM}
+    -r  .. Use remote Docker registry. If not given, a local registry instance
+           will be spawned at port 5000.
     -t <tag>
         .. Image tag to use
     -h  .. Show this help
@@ -40,16 +42,16 @@ helpMe() {
 
 createLocalRegistry() {
     info "Checking local Docker registry"
-    if docker ps -a --format '{{.Names}}' | grep -q "${REGISTRY_NAME}" ; then
-        if docker ps --format '{{.Names}}' | grep -q "${REGISTRY_NAME}" ; then
-            info " -> Local registry '${REGISTRY_NAME}' already running"
+    if docker ps -a --format '{{.Names}}' | grep -q "${LOCAL_REGISTRY_NAME}" ; then
+        if docker ps --format '{{.Names}}' | grep -q "${LOCAL_REGISTRY_NAME}" ; then
+            info " -> Local registry '${LOCAL_REGISTRY_NAME}' already running"
         else
-            info " -> Starting already existing registry instance '${REGISTRY_NAME}'"
-            docker start "${REGISTRY_NAME}"
+            info " -> Starting already existing registry instance '${LOCAL_REGISTRY_NAME}'"
+            docker start "${LOCAL_REGISTRY_NAME}"
             info " -> Done"
         fi
     else
-        info " -> Starting local registry '${REGISTRY_NAME}'"
+        info " -> Starting local registry '${LOCAL_REGISTRY_NAME}'"
         docker run -d -p 5000:5000 --restart=always --name registry registry:2
         info " -> Done"
     fi
@@ -88,15 +90,24 @@ buildImages() {
 IMAGE_SUFFIX=
 IMAGE_TAG=latest
 FORCE_BUILDER_CREATION=false
-REGISTRY_NAME=registry
+LOCAL_REGISTRY=true
+LOCAL_REGISTRY_NAME=registry
+REGISTRY_PREFIX='localhost:5000/'
+REGISTRY_NAME=''
+DOCKER_TAG=docker-kaspad
+DOCKER_TAG_VERSION=latest
 BUILDER_NAME=kaspa_builder
 PLATFORM="linux/arm/v7,linux/arm64/v8,linux/amd64"
 
-while getopts b:fp:t:h option; do
+while getopts b:fp:rt:h option; do
     case ${option} in
         b) BUILDER_NAME="${OPTARG}" ;;
         f) FORCE_BUILDER_CREATION=true ;;
         p) PLATFORM="${OPTARG}" ;;
+        r) LOCAL_REGISTRY=false
+           REGISTRY_PREFIX=''
+           REGISTRY_NAME='hlxeasy/'
+           ;;
         t) IMAGE_TAG="${OPTARG}" ;;
         h) helpMe && exit 0;;
         *) die 90 "invalid option \"${OPTARG}\"";;
