@@ -90,7 +90,7 @@ IMAGE_TAG=latest
 FORCE_BUILDER_CREATION=false
 REGISTRY_NAME=registry
 BUILDER_NAME=kaspa_builder
-PLATFORM="linux/arm64/v8,linux/amd64"
+PLATFORM="linux/arm/v7,linux/arm64/v8,linux/amd64"
 
 while getopts b:fp:t:h option; do
     case ${option} in
