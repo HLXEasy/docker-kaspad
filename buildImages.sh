@@ -27,6 +27,8 @@ helpMe() {
     Optional parameters:
     -b <builder_name>
         .. Name of Docker builder. Default: ${BUILDER_NAME}
+    -f  .. Force creation of Docker builder. If already existing, the
+           builder will be removed and recreated.
     -p <platform-list>
         .. List of plattforms separated by comma.
            Default: ${PLATFORM}
@@ -54,17 +56,27 @@ createLocalRegistry() {
 }
 
 createBuilder() {
+    info " -> Creating builder instance '${BUILDER_NAME}'"
+    docker buildx create \
+        --name "${BUILDER_NAME}" \
+        --platform "${PLATFORM}" \
+        --bootstrap \
+        --use
+    info " -> Done"
+}
+
+checkBuilder() {
     info "Checking builder instance"
     if docker buildx inspect "${BUILDER_NAME}" >/dev/null 2>&1 ; then
-        info " -> Using already existing builder instance '${BUILDER_NAME}'"
+        if ${FORCE_BUILDER_CREATION} ; then
+            info " -> Removing existing builder instance"
+            docker buildx rm "${BUILDER_NAME}"
+            createBuilder
+        else
+            info " -> Using already existing builder instance '${BUILDER_NAME}'"
+        fi
     else
-        info " -> Creating builder instance '${BUILDER_NAME}'"
-        docker buildx create \
-            --name "${BUILDER_NAME}" \
-            --platform "${PLATFORM}" \
-            --bootstrap \
-            --use
-        info " -> Done"
+        createBuilder
     fi
 }
 
@@ -91,5 +103,8 @@ while getopts b:fp:t:h option; do
     esac
 done
 
-createBuilder
+if ${LOCAL_REGISTRY} ; then
+    createLocalRegistry
+fi
+checkBuilder
 buildImages
