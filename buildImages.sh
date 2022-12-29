@@ -58,10 +58,21 @@ createLocalRegistry() {
 }
 
 createBuilder() {
+    local builderConfigParam=''
+    if ${LOCAL_REGISTRY} ; then
+        info "Creating builder configuration file"
+        echo "[registry.\"${REGISTRY_PREFIX%:*}\"]" > builder-config.toml
+        echo "  http = true" >> builder-config.toml
+        echo "  insecure = true" >> builder-config.toml
+        builderConfigParam='--config builder-config.toml'
+        info " -> Done"
+    fi
     info " -> Creating builder instance '${BUILDER_NAME}'"
     docker buildx create \
         --name "${BUILDER_NAME}" \
         --platform "${PLATFORM}" \
+        --buildkitd-flags '--allow-insecure-entitlement security.insecure' \
+        ${builderConfigParam} \
         --bootstrap \
         --use
     info " -> Done"
@@ -96,7 +107,7 @@ IMAGE_TAG=latest
 FORCE_BUILDER_CREATION=false
 LOCAL_REGISTRY=true
 LOCAL_REGISTRY_NAME=registry
-REGISTRY_PREFIX='localhost:5000/'
+REGISTRY_PREFIX='192.168.42.107:5000/'
 REGISTRY_NAME=''
 DOCKER_TAG=docker-kaspad
 DOCKER_TAG_VERSION=latest
