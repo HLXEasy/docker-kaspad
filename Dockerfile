@@ -15,10 +15,19 @@ RUN go install -ldflags '-linkmode external -w -extldflags "-static"' . ./cmd/..
 
 FROM alpine:latest
 
-COPY --from=builder /go/bin /
+RUN apk add --no-cache \
+    bash \
+    mc
+
+# Enable Lynx-like motion on Midnight Commander
+RUN mkdir -p /root/.config/mc \
+ && echo "[Panels]" > /root/.config/mc/ini \
+ && echo "navigate_with_arrows=true" >> /root/.config/mc/ini
+
+COPY --from=builder /go/bin /usr/local/bin/
 
 EXPOSE 16110
 EXPOSE 16111
 EXPOSE 8082
 
-CMD sh
+CMD bash
