@@ -61,7 +61,7 @@ createBuilder() {
     local builderConfigParam=''
     if ${LOCAL_REGISTRY} ; then
         info "Creating builder configuration file"
-        echo "[registry.\"${REGISTRY_PREFIX%:*}\"]" > builder-config.toml
+        echo "[registry.\"${REGISTRY_PREFIX%/*}\"]" > builder-config.toml
         echo "  http = true" >> builder-config.toml
         echo "  insecure = true" >> builder-config.toml
         builderConfigParam='--config builder-config.toml'
