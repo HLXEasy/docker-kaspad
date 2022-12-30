@@ -24,6 +24,9 @@ RUN mkdir -p /root/.config/mc \
  && echo "[Panels]" > /root/.config/mc/ini \
  && echo "navigate_with_arrows=true" >> /root/.config/mc/ini
 
+# Create Kaspa data directories
+RUN mkdir -p /root/.kaspad /root/.kaspawallet
+
 COPY --from=builder /go/bin /usr/local/bin/
 
 EXPOSE 16110
