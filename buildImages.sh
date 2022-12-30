@@ -22,9 +22,16 @@ helpMe() {
     echo "
     Helper script to build and push multiarch kaspad Docker image.
 
+    Per default a local Docker registry at port 5000 is spawned. To use
+    hub.docker.io, have a look at options -r and -a below.
+
     Usage:
     ${0} [options]
     Optional parameters:
+    -a <account-name>
+        .. If a remote registry shoule be used (see option -r), you need to
+           give the corresponding account name. Currently only DockerHub is
+           supported.
     -b <builder_name>
         .. Name of Docker builder. Default: ${BUILDER_NAME}
     -f  .. Force creation of Docker builder. If already existing, the
@@ -32,8 +39,8 @@ helpMe() {
     -p <platform-list>
         .. List of plattforms separated by comma.
            Default: ${PLATFORM}
-    -r  .. Use remote Docker registry. If not given, a local registry instance
-           will be spawned at port 5000.
+    -r  .. Use remote Docker registry. Without this option, a local registry
+           instance at port 5000 will be spawned.
     -t <tag>
         .. Image tag to use
     -h  .. Show this help
@@ -98,7 +105,7 @@ buildImages() {
     docker buildx build \
         --push \
         --platform "${PLATFORM}" \
-        --tag "${REGISTRY_PREFIX}${REGISTRY_NAME}${DOCKER_TAG}:${DOCKER_TAG_VERSION}" \
+        --tag "${REGISTRY_PREFIX}${REGISTRY_ACCOUNT_NAME}${DOCKER_TAG}:${DOCKER_TAG_VERSION}" \
         .
     info " -> tbd"
 }
@@ -108,21 +115,21 @@ IMAGE_TAG=latest
 FORCE_BUILDER_CREATION=false
 LOCAL_REGISTRY=true
 LOCAL_REGISTRY_NAME=registry
-REGISTRY_PREFIX='192.168.42.107:5000/'
-REGISTRY_NAME=''
+REGISTRY_PREFIX="$(hostname -I | xargs):5000/"
+REGISTRY_ACCOUNT_NAME=''
 DOCKER_TAG=docker-kaspad
 DOCKER_TAG_VERSION=latest
 BUILDER_NAME=kaspa_builder
 PLATFORM="linux/arm64/v8,linux/amd64"
 
-while getopts b:fp:rt:h option; do
+while getopts a:b:fp:rt:h option; do
     case ${option} in
+        a) REGISTRY_ACCOUNT_NAME="${OPTARG}" ;;
         b) BUILDER_NAME="${OPTARG}" ;;
         f) FORCE_BUILDER_CREATION=true ;;
         p) PLATFORM="${OPTARG}" ;;
         r) LOCAL_REGISTRY=false
            REGISTRY_PREFIX=''
-           REGISTRY_NAME='hlxeasy/'
            ;;
         t) IMAGE_TAG="${OPTARG}" ;;
         h) helpMe && exit 0;;
@@ -130,8 +137,21 @@ while getopts b:fp:rt:h option; do
     esac
 done
 
-if ${LOCAL_REGISTRY} ; then
+if ${LOCAL_REGISTRY}; then
+    # REGISTRY_ACCOUNT_NAME must be empty on local registry,
+    # so clear it, just in case it was given
+    REGISTRY_ACCOUNT_NAME=''
     createLocalRegistry
+else
+    if [ -z "${REGISTRY_ACCOUNT_NAME}" ]; then
+        error "If using a remote Docker registry, the account name must be given!"
+        helpMe
+        die 23 "No account name given"
+    else
+        # Exactly one trailing slash required, so add
+        # trailing slash by removing a probably existing one
+        REGISTRY_ACCOUNT_NAME=${REGISTRY_ACCOUNT_NAME%/}/
+    fi
 fi
 checkBuilder
 buildImages
