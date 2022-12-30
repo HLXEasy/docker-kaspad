@@ -1,0 +1,28 @@
+version: "3"
+# SPDX-FileCopyrightText: © 2022 Kaspa Developers
+# SPDX-License-Identifier: MIT
+
+services:
+  kaspad:
+    container_name: kaspad
+    image: hlxeasy/docker-kaspad:latest
+    restart: unless-stopped
+    expose:
+      - "16110/tcp"
+      - "16111/tcp"
+    volumes:
+      - kaspad1:/root/.kaspad/
+    command: kaspad --utxoindex --enablebanning --whitelist=192.168.0.0/16
+
+  kaspawallet:
+    container_name: kaspawallet
+    image: hlxeasy/docker-kaspad:latest
+    restart: unless-stopped
+    volumes:
+      - kaspawallet:/root/.kaspawallet/
+    command: kaspawallet start-daemon --rpcserver kaspad
+#    command: bash -c "sleep 3600"
+
+volumes:
+  kaspad1:
+  kaspawallet:
