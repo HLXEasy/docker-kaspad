@@ -1,6 +1,6 @@
 version: "3"
 # SPDX-FileCopyrightText: © 2022 Kaspa Developers
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: ISC
 
 services:
   kaspad:

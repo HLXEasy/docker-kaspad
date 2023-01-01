@@ -4,7 +4,7 @@ Upstream-Contact: Kasps Developers <info@kaspa.org>
 Source: https://github.com/kaspanet
 
 # ############################################################################
-# MIT Licenses
+# ISC Licenses
 Files: *
 Copyright: 2022 Kaspa Developers
-License: MIT
+License: ISC

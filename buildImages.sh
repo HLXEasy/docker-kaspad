@@ -4,7 +4,7 @@
 # Helper script to build and push multiarch kaspad image
 #
 # SPDX-FileCopyrightText: © 2022 Helix <hlxeasy@gmail.com>
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: ISC
 #
 # Created: 2022-12-27 Helix <hlxeasy@gmail.com>
 #

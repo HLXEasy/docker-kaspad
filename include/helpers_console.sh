@@ -4,7 +4,7 @@
 # Simple console helper functions
 #
 # SPDX-FileCopyrightText: © 2018 Helix <hlxeasy@gmail.com>
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: ISC
 #
 # ============================================================================
 

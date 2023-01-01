@@ -4,7 +4,7 @@ Dockerized version of [kaspad](https://github.com/kaspanet/kaspad), the Kaspa Da
 
 ## License
 * SPDX-FileCopyrightText: © 2022 Kaspa Developers
-* SPDX-License-Identifier: MIT
+* SPDX-License-Identifier: ISC
 
 ## Usage
 
