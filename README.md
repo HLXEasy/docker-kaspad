@@ -218,12 +218,12 @@ Login Succeeded
 To push to a remote registry you need to use options `-r` and `-a` with your DockerHub account name. Example:
 
 ```bash
-❯ ./buildImages.sh -r -a hlxeasy
+❯ ./buildImages.sh -r -a hlxeasy -t 1.0
 Info   : Checking local Docker registry
 ...
 Info   :  -> Done
 Info   : Get the image with the following cmd:
-Info   : docker pull hlxeasy/docker-kaspad:latest
+Info   : docker pull hlxeasy/docker-kaspad:1.0
 ```
 
 Happy Kaspa'ing! :-)
