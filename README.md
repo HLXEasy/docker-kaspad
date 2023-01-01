@@ -61,7 +61,7 @@ Remove volume with `docker volume rm <volume-name>` i. e. like this:
 
 ### Run `kaspad` together with `kaspawallet`
 
-With the compose file `docker-compose-kaspawallet.yaml` it is possible to run kaspad and kaspawallet. In detail there will be a container which runs `kaspad` and a second one which runs `kaspawallet`.
+With the compose file `docker-compose-kaspawallet.yaml` it is possible to run `kaspad` and `kaspawallet`. In detail there will be a container which runs `kaspad` and a second one which runs `kaspawallet`.
 
 The `kaspad` Container is similar to the standalone version from the section before. The `kaspawallet` container interacts with the `kaspad` container and uses it's own Docker volume to persist data.
 
@@ -75,7 +75,7 @@ To build from scratch you can use the helper script `buildImages.sh`. This scrip
   * To build multi arch images the usage of a Docker registry is required. So if you want to build pure locally (without pushing to a public registry), a local Registry is started.
 * Create a Docker BuildX builder instance
 * Build and push Docker images for all supported architectures
-  * The "build" is a real build. To do so the [kaspad Github repository](https://github.com/kaspanet/kaspad) is cloned. After that the latest release tag will be checked out and build. Currently as of 2023-01-01 this is [v0.12.11](https://github.com/kaspanet/kaspad/releases/tag/v0.12.11). The resulting Docker image is based on [Alpine Linux](https://www.alpinelinux.org/) and contains the binaries `genkeypair`, `kaspactl`, `kaspad`, `kaspaminer` and `kaspawallet`, all installed at `/usr/local/bin/`.
+  * The "build" is a real build. To do so the [kaspad Github repository](https://github.com/kaspanet/kaspad) is cloned. After that the latest release tag will be checked out and build. Currently (2023-01-01) this is [v0.12.11](https://github.com/kaspanet/kaspad/releases/tag/v0.12.11). The resulting Docker image is based on [Alpine Linux](https://www.alpinelinux.org/) and contains the binaries `genkeypair`, `kaspactl`, `kaspad`, `kaspaminer` and `kaspawallet`, all installed at `/usr/local/bin/` for easy usage.
   * Supported architectures are currently `linux/arm64/v8` and `linux/amd64`.
 
 Here's the help output of the build script:
