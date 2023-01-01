@@ -65,7 +65,55 @@ With the compose file `docker-compose-kaspawallet.yaml` it is possible to run `k
 
 The `kaspad` Container is similar to the standalone version from the section before. The `kaspawallet` container interacts with the `kaspad` container and uses it's own Docker volume to persist data.
 
-**ToDo:** Describe initial kaspawallet setup
+To simple start `kaspad` and `kaspawallet` as a containers, you can use `docker-compose-kaspawallet.yaml` like this:
+
+```bash
+❯ docker compose -f docker-compose-kaspawallet.yaml up --detach
+```
+
+This will start `kaspad` in one container instance and `kaspawallet` within another one. Each container instance will use it's own Docker volume to persist its data and reuse these volumes if the containers were destroyed/restarted.
+
+To see the logs just use this cmd:
+
+```bash
+❯ docker compose -f docker-compose-kaspawallet.yaml logs -f
+```
+
+Exit the log output using `Ctrl-C`.
+
+Within the log output you will see this line:
+
+```bash
+kaspawallet  | /root/.kaspawallet/kaspa-mainnet/keys.json not found, checking again in 60s
+```
+
+This is because `kaspawallet` is not configured at the moment. To do so, you need to enter the container instance using `docker exec` and setup kaspawallet as usual. This is a onetime step as all the data is stored on the persistent Docker volume.
+
+```bash
+❯ docker exec -it kaspawallet bash
+24afcd531c88:/#
+24afcd531c88:/# kaspawallet create
+Enter password for the key file:
+Confirm password:
+...
+24afcd531c88:/#
+24afcd531c88:/# kaspawallet balance
+Total balance, KAS
+24afcd531c88:/#
+```
+
+**Important: Don't forget to store the seed words using `kaspawallet dump-unencrypted-data`!**
+
+As soon as the first step (`kaspawallet create`) is finished, the log output of the kaspawallet container instance will contain these lines:
+
+```bash
+kaspawallet  | 2023-01-01 19:32:27.520 [INF] KSWD: Listening to TCP on localhost:8082               <-- kaspawallet started
+kaspawallet  | 2023-01-01 19:32:27.520 [INF] KSWD: Connecting to a node at kaspad...                <-- Go ahead and connect to kaspad on the other container instance
+kaspad       | 2023-01-01 19:32:27.525 [INF] TXMP: RPC Incoming connection from 172.22.0.3:39304 #1 <-- kaspad get incoming connection from kaspawallet
+kaspawallet  | 2023-01-01 19:32:27.530 [INF] KSWD: Connected, reading keys file ...                 <-- kaspawallet is connected
+kaspawallet  | 2023-01-01 19:32:27.530 [INF] KSWD: Read, syncing the wallet...                      <-- Go ahead an sync
+kaspawallet  | 2023-01-01 19:32:28.096 [INF] KSWD: Wallet is synced, ready for queries              <-- Sync finished, kaspawallet ready to use
+```
 
 ## Build from scratch
 
