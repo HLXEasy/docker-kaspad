@@ -20,9 +20,18 @@ services:
     restart: unless-stopped
     volumes:
       - kaspawallet:/root/.kaspawallet/
-    command: kaspawallet start-daemon --rpcserver kaspad
-#    command: bash -c "sleep 3600"
-
+    command:
+      - /bin/bash
+      - -c
+      - |
+        while true ; do
+          if [ -e /root/.kaspawallet/kaspa-mainnet/keys.json ] ; then
+            kaspawallet start-daemon --rpcserver kaspad
+          else
+            echo "/root/.kaspawallet/kaspa-mainnet/keys.json not found, checking again in 60s"
+            sleep 60
+          fi
+        done
 volumes:
   kaspad1:
   kaspawallet:
