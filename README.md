@@ -8,7 +8,7 @@ Dockerized version of [kaspad](https://github.com/kaspanet/kaspad), the Kaspa Da
 
 ## Usage
 
-This repository contains some compose files for easy usage of provided Docker images. Additionally the Docker images could be built using provided Dockerfile and build helper script.
+This repository contains some compose files for easy usage of provided Docker images. Additionally the Docker images could be built by yourself using provided Dockerfile and build helper script.
 
 ### Run `kaspad` standalone
 
@@ -26,13 +26,15 @@ To see the logs just use this cmd:
 ❯ docker compose -f docker-compose-kaspad.yaml logs -f
 ```
 
+Exit the log output using `Ctrl-C`.
+
 To shutdown the instance properly, you should use this cmd:
 
 ```bash
 ❯ docker compose -f docker-compose-kaspad.yaml down
 ```
 
-The Docker volume is still existing and will be reused with a subsequent start of the container, even if a completely new instance is spawned. The name of the volume will be created out of the folder name of this Git clone and the defined name on the Docker compose file. So with any further tweaks it should look like this:
+The Docker volume is still existing and will be reused with a subsequent start of the container, even if a completely new instance is spawned. The name of the volume will be created out of the folder name of this Git clone and the defined name on the Docker compose file. So without any further tweaks it should look like this:
 
 ```bash
 ❯ docker volume ls
@@ -63,18 +65,18 @@ With the compose file `docker-compose-kaspawallet.yaml` it is possible to run ka
 
 The `kaspad` Container is similar to the standalone version from the section before. The `kaspawallet` container interacts with the `kaspad` container and uses it's own Docker volume to persist data.
 
+**ToDo:** Describe initial kaspawallet setup
+
 ## Build from scratch
 
 To build from scratch you can use the helper script `buildImages.sh`. This script will perform the following steps:
 
 * Optionally create and run a local Docker registry
-
-  To build multi arch images the usage of a Docker registry is required. So if you want to build pure locally (without pushing to a public registry), a local Registry is started.
-
+  * To build multi arch images the usage of a Docker registry is required. So if you want to build pure locally (without pushing to a public registry), a local Registry is started.
 * Create a Docker BuildX builder instance
 * Build and push Docker images for all supported architectures
-
-  The "build" is a real build. To do so the [kaspad Github repository](https://github.com/kaspanet/kaspad) is cloned. After that the latest release tag will be checked out and build. Currently as of 2023-01-01 this is [v0.12.11](https://github.com/kaspanet/kaspad/releases/tag/v0.12.11). The resulting Docker image is based on [Alpine Linux](https://www.alpinelinux.org/) and contains the binaries `genkeypair`, `kaspactl`, `kaspad`, `kaspaminer` and `kaspawallet`, all installed at `/usr/local/bin/`.
+  * The "build" is a real build. To do so the [kaspad Github repository](https://github.com/kaspanet/kaspad) is cloned. After that the latest release tag will be checked out and build. Currently as of 2023-01-01 this is [v0.12.11](https://github.com/kaspanet/kaspad/releases/tag/v0.12.11). The resulting Docker image is based on [Alpine Linux](https://www.alpinelinux.org/) and contains the binaries `genkeypair`, `kaspactl`, `kaspad`, `kaspaminer` and `kaspawallet`, all installed at `/usr/local/bin/`.
+  * Supported architectures are currently `linux/arm64/v8` and `linux/amd64`.
 
 Here's the help output of the build script:
 
@@ -121,7 +123,7 @@ Info   : docker pull 192.168.248.226:5000/docker-kaspad:latest
 
 Notice the last line on the output, which shows the cmd to pull the image.
 
-_Note: The IP there is the automatically determined by the build script to access the local Docker registry and might be different at your setup. As the local build is using http, you need to activate usage of insecure registries on your Docker configuration and add the local registry explicitly._
+_Note: The IP there is automatically determined by the build script, used to access the local Docker registry and might be different at your setup. As the local build is using http, you need to activate usage of insecure registries on your Docker configuration and add the local registry explicitly._
 
 Example for Docker Desktop (Windows):
 
@@ -156,7 +158,7 @@ Password:
 Login Succeeded
 ```
 
-To push to a remote registry you need to use optione `-r` and `-a` with your DockerHub account name. Example:
+To push to a remote registry you need to use options `-r` and `-a` with your DockerHub account name. Example:
 
 ```bash
 ❯ ./buildImages.sh -r -a hlxeasy
@@ -166,3 +168,5 @@ Info   :  -> Done
 Info   : Get the image with the following cmd:
 Info   : docker pull hlxeasy/docker-kaspad:latest
 ```
+
+Happy Kaspa'ing! :-)
