@@ -8,14 +8,14 @@ Dockerized version of [kaspad](https://github.com/kaspanet/kaspad), the Kaspa Da
 
 ## Usage
 
-This repository contains some compose files for easy usage of provided Docker images.
+This repository contains some compose files for easy usage of provided Docker images. Additionally the Docker images could be built using provided Dockerfile and build helper script.
 
-### kaspad standalone
+### Run `kaspad` standalone
 
 To simple start kaspad as a container, you can use `docker-compose-kaspad.yaml` like this:
 
 ```bash
-docker compose -f docker-compose-kaspad.yaml up --detach
+❯ docker compose -f docker-compose-kaspad.yaml up --detach
 ```
 
 This will start `kaspad` on a container instance and put all data onto a separate Docker volume. So these data is persistent and will be reused if the container is destroyed/restarted.
@@ -23,16 +23,41 @@ This will start `kaspad` on a container instance and put all data onto a separat
 To see the logs just use this cmd:
 
 ```bash
-docker compose -f docker-compose-kaspad.yaml logs -f
+❯ docker compose -f docker-compose-kaspad.yaml logs -f
 ```
 
 To shutdown the instance properly, you should use this cmd:
 
 ```bash
-docker compose -f docker-compose-kaspad.yaml down
+❯ docker compose -f docker-compose-kaspad.yaml down
 ```
 
-### kaspad with kaspawallet
+The Docker volume is still existing and will be reused with a subsequent start of the container, even if a completely new instance is spawned. The name of the volume will be created out of the folder name of this Git clone and the defined name on the Docker compose file. So with any further tweaks it should look like this:
+
+```bash
+❯ docker volume ls
+DRIVER    VOLUME NAME
+...
+local     docker-kaspad_kaspad1
+...
+```
+
+Check the used diskspace:
+```bash
+❯ docker system df -v | grep kaspad1
+docker-kaspad_kaspad1                     1         8.298GB
+```
+
+* 1st col: Volume name
+* 2nd col: Amount of containers, on which this volume is mounted
+* 3rd col: Used disk space
+
+Remove volume with `docker volume rm <volume-name>` i. e. like this:
+```bash
+❯ docker volume rm docker-kaspad_kaspad1
+```
+
+### Run `kaspad` together with `kaspawallet`
 
 With the compose file `docker-compose-kaspawallet.yaml` it is possible to run kaspad and kaspawallet. In detail there will be a container which runs `kaspad` and a second one which runs `kaspawallet`.
 
