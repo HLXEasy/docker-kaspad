@@ -25,9 +25,9 @@ helpMe() {
     Per default a local Docker registry at port 5000 is spawned. To use
     hub.docker.io, have a look at options -r and -a below.
 
-    Usage:
-    ${0} [options]
-    Optional parameters:
+    Usage: ${0} [options]
+
+    Options:
     -a <account-name>
         .. If a remote registry shoule be used (see option -r), you need to
            give the corresponding account name. Currently only DockerHub is
@@ -42,7 +42,7 @@ helpMe() {
     -r  .. Use remote Docker registry. Without this option, a local registry
            instance at port 5000 will be spawned.
     -t <tag>
-        .. Image tag to use
+        .. Image tag to use. Default: ${DOCKER_TAG_VERSION}
     -h  .. Show this help
     "
 }
@@ -107,7 +107,9 @@ buildImages() {
         --platform "${PLATFORM}" \
         --tag "${REGISTRY_PREFIX}${REGISTRY_ACCOUNT_NAME}${DOCKER_TAG}:${DOCKER_TAG_VERSION}" \
         .
-    info " -> tbd"
+    info " -> Done"
+    info "Get the image with the following cmd:"
+    info "docker pull ${REGISTRY_PREFIX}${REGISTRY_ACCOUNT_NAME}${DOCKER_TAG}:${DOCKER_TAG_VERSION}"
 }
 
 IMAGE_SUFFIX=
