@@ -113,7 +113,6 @@ buildImages() {
 }
 
 IMAGE_SUFFIX=
-IMAGE_TAG=latest
 FORCE_BUILDER_CREATION=false
 LOCAL_REGISTRY=true
 LOCAL_REGISTRY_NAME=registry
@@ -133,7 +132,7 @@ while getopts a:b:fp:rt:h option; do
         r) LOCAL_REGISTRY=false
            REGISTRY_PREFIX=''
            ;;
-        t) IMAGE_TAG="${OPTARG}" ;;
+        t) DOCKER_TAG_VERSION="${OPTARG}" ;;
         h) helpMe && exit 0;;
         *) die 90 "invalid option \"${OPTARG}\"";;
     esac
